@@ -1,0 +1,67 @@
+{% load static %}
+<html>
+    <head>
+        <title>Creatosaurus</title>
+        <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+        <link href='//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    </head>
+    <body>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.footer {
+
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   background-color: #517BE8;
+   color: white;
+   text-align: center;
+   padding:10px;
+}
+
+
+<!--@media (prefers-color-scheme: dark) {-->
+<!--  body {-->
+<!--    background-color: black;-->
+<!--    color: white;-->
+<!--  }-->
+<!--}-->
+</style>
+{% block content %}
+{% endblock %}
+{%if request.user.is_authenticated%}
+
+
+<div class="footer" >
+    <span><a style="text-decoration:none;color:white;padding:5px"  href="/profile" >Dashboard</a></span>
+    <span><a style="text-decoration:none;color:white;padding:5px"  href="/profile/edit" >Edit</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span><a style="text-decoration:none;color:white;padding:5px"  href="/profile/details" >Edit Details</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span><a style="text-decoration:none;color:white;padding:5px"  href="/password" >Change Password</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span><a style="text-decoration:none;color:white;padding:5px"  href="/configure" >Configure Accounts </a></span>
+    <span><a style="text-decoration:none;color:white;padding:5px"  href="/admin" >Admin</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span><a style="text-decoration:none;color:white;padding:5px"  href="/logout" >Logout</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+</div>
+
+{%else%}
+<div class="footer">
+ <span><a style="text-decoration:none;color:white;"  href="/admin" >Admin</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span><a style="text-decoration:none;color:white;"  href="/register" >Register</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+</div>
+
+    {%endif%}
+</body>
+</html>

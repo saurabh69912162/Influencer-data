@@ -1,0 +1,8 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+
+<h1 style="margin:auto;width: 5%;padding: 10px;">Login</h1>
+<div class="center" style="margin: auto; text-align:center;width: 25%;border: 3px solid black;padding: 10px;">
+{% include 'accounts/form.html' with form=form %}
+</div>
+{% endblock %}
