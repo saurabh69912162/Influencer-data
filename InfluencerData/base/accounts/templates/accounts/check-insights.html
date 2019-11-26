@@ -60,13 +60,13 @@ html {
 
     <form action="/check-insights/{{selected.account_uid}}" method="POST">
         {%csrf_token%}
-        <button type="submit" name="btn-off" class="btn btn-warning" value="{{selected.account_uid}}">Turn Auto Sync OFF</button>
+        <button type="submit" name="btn-off" class="btn btn-warning" value="{{selected.account_uid}}">Turn OFF Auto Sync</button>
     </form>
     {%else%}
 
     <form action="/check-insights/{{selected.account_uid}}" method="POST">
         {%csrf_token%}
-        <button type="submit" name="btn-on" class="btn btn-danger" value="{{selected.account_uid}}">Turn Auto Sync On</button>
+        <button type="submit" name="btn-on" class="btn btn-danger" value="{{selected.account_uid}}">Turn On Auto Sync</button>
         <button type="submit" name="btn-sync-now" class="btn btn-warning" value="{{selected.account_uid}}">Sync Now</button>
 
         {%if selected.last_sync%}
@@ -304,7 +304,43 @@ html {
 {%elif selected.provider == 'twitter'%}
 twitter
 {%elif selected.provider == 'linkedin'%}
-linkedin
+<div class="jumbotron jumbotron-fluid bg-info">
+  <div class="container">
+
+      <h1 class="display-4" style="color:white">Social Reach : 500+</h1>
+
+  </div>
+</div>
+<div class="row">
+
+
+
+<div class="column">
+    <div class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="card-header"><strong>Total Connections</strong></div>
+            <div class="card-body">
+            <h5 class="card-title" style="color:red">500+</h5>
+            </div>
+        </div>
+</div>
+
+
+<div class="column">
+    <div class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="card-header"><strong>Featured Post</strong></div>
+            <div class="card-body">
+            <h5 class="card-title" style="color:red">None</h5>
+            </div>
+        </div>
+</div>
+
+
+
+
+</div>
+
+
+
 {%elif selected.provider == 'pinterest'%}
 pinterest
 {%else%}

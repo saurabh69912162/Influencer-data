@@ -611,13 +611,9 @@ def fetch_facebook_data(user,uid):
     obj = facebook_data.objects.get(username = MyUser.objects.get(id = user),
         account = selected_connections.objects.get(username = MyUser.objects.get(id= user), account_uid= uid))
 
-    print(obj)
-
     account_details = selected_connections.objects.get(username = MyUser.objects.get(id= user), account_uid= uid)
 
     data = requests.get("https://graph.facebook.com/v4.0/"+account_details.account_uid+"?fields=id%2Cabout%2Cname%2Cbio%2Cbusiness%2Ccategory%2Cfan_count%2Cfeatured_video%2Cartists_we_like%2Cconnected_instagram_account%2Ccover%2Ccountry_page_likes%2Cengagement%2Cimpressum%2Cinfluences%2Cnew_like_count%2Coverall_star_rating%2Cprice_range%2Crating_count%2Ctalking_about_count%2Cunread_message_count%2Cunread_notif_count%2Cunseen_message_count%2Cverification_status%2Cwebsite%2Cwere_here_count%2Cratings.limit(100)%7Brating%7D%2Clikes&access_token="+account_details.long_token)
-    print('response type is ',type(data))
-    print(data.json())
     json_obj = data.json()
 
     obj.name = account_details.account_name
@@ -693,7 +689,32 @@ def fetch_facebook_data(user,uid):
     obj.save()
     return data
 
+def fetch_linkedin_data(user, uid):
+    linkedin_data.objects.get_or_create(
+        username=MyUser.objects.get(id=user),
+        account=selected_connections.objects.get(username=MyUser.objects.get(id=user), account_uid=uid)
+    )
+    obj = linkedin_data.objects.get(username=MyUser.objects.get(id=user),
+                                    account=selected_connections.objects.get(username=MyUser.objects.get(id=user),
+                                                                             account_uid=uid))
 
+    account_details = selected_connections.objects.get(username=MyUser.objects.get(id=user), account_uid=uid)
+
+    url = "https://api.linkedin.com/v2/me/"
+    text = 'Bearer ' + str(account_details.access_token)
+    headers = {
+        'Authorization': text,
+    }
+
+    response = requests.request("GET", url, headers=headers)
+    answer = response.json()
+    print(answer)
+
+    obj.name = account_details.account_name
+    obj.linkedin_id = uid
+    obj.name = str(answer['firstName']['localized']['en_US'])+' '+str(answer['lastName']['localized']['en_US'])
+    obj.save()
+    return True
 
 def check_insights(request,uid):
     if request.user.is_authenticated:
@@ -719,7 +740,16 @@ def check_insights(request,uid):
 
                 fetch_facebook_data(user_id,uid)
             elif pro == 'linkedin':
-                print('linkedin')
+                linkedin_data.objects.get_or_create(
+                    username=MyUser.objects.get(id=user_id),
+                    account=selected_connections.objects.get(username=MyUser.objects.get(id=user_id), account_uid=uid)
+                )
+                final_obj = linkedin_data.objects.get(username=MyUser.objects.get(id=user_id),
+                                                      account=selected_connections.objects.get(
+                                                          username=MyUser.objects.get(id=user_id), account_uid=uid))
+
+                fetch_linkedin_data(user_id, uid)
+
             elif pro == 'google':
                 print('google')
             elif pro == 'twitter':
@@ -743,7 +773,15 @@ def check_insights(request,uid):
                                                     username=MyUser.objects.get(id=user_id), account_uid=uid))
 
             elif pro == 'linkedin':
-                print('linkedin')
+                linkedin_data.objects.get_or_create(
+                    username=MyUser.objects.get(id=user_id),
+                    account=selected_connections.objects.get(username=MyUser.objects.get(id=user_id), account_uid=uid)
+                )
+                final_obj = linkedin_data.objects.get(username=MyUser.objects.get(id=user_id),
+                                                      account=selected_connections.objects.get(
+                                                          username=MyUser.objects.get(id=user_id), account_uid=uid))
+
+
             elif pro == 'google':
                 print('google')
             elif pro == 'twitter':
@@ -767,7 +805,7 @@ def check_insights(request,uid):
                 if pro == 'facebook':
                     fetch_facebook_data(user_id, uid)
                 elif pro == 'linkedin':
-                    print('linkedin')
+                    fetch_linkedin_data(user_id, uid)
                 elif pro == 'google':
                     print('google')
                 elif pro == 'twitter':

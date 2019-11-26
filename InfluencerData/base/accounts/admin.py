@@ -105,3 +105,11 @@ class facebook_data_admin(admin.ModelAdmin):
 admin.site.register(facebook_data, facebook_data_admin)
 
 
+class linkedin_data_admin(admin.ModelAdmin):
+
+
+	list_display = ("username","account","linkedin_id","name","headline","fan_count")
+	filter_horizontal = ()
+
+admin.site.register(linkedin_data, linkedin_data_admin)
+

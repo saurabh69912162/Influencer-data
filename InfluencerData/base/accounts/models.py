@@ -291,3 +291,13 @@ class facebook_data(models.Model):
     verification_status= models.CharField(max_length=1000,blank=True,null=True)
     website = models.CharField(max_length=1000,blank=True,null=True)
     were_here_count = models.BigIntegerField(blank=True,null=True) #int
+
+
+
+class linkedin_data(models.Model):
+    username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    account = models.ForeignKey(selected_connections, on_delete=models.CASCADE)
+    linkedin_id = models.CharField(max_length=1000, blank=True, null=True)
+    name = models.CharField(max_length=1000, blank=True, null=True)
+    fan_count = models.BigIntegerField(blank=True, null=True, default=0)  # connections -> currently does not have permission for connections API
+    headline = models.CharField(max_length=2000, blank=True, null=True)
