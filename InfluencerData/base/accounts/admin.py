@@ -96,3 +96,12 @@ class notification_pannel_admin(admin.ModelAdmin):
 
 admin.site.register(notification_pannel, notification_pannel_admin)
 
+class facebook_data_admin(admin.ModelAdmin):
+
+
+	list_display = ("username","account","fb_id","name","bio","about","category","fan_count","featured_video_desc","artists_we_like","connected_instagram_account","cover_source","country_page_likes","engagement","impressum","new_like_count","overall_star_rating","rating_count","talking_about_count","unread_message_count","unread_notif_count","unseen_message_count","verification_status","website","were_here_count")
+	filter_horizontal = ()
+
+admin.site.register(facebook_data, facebook_data_admin)
+
+

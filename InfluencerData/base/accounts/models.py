@@ -256,3 +256,38 @@ class notification_pannel(models.Model):
                 pass
         super().save(*args, **kwargs)
 
+
+
+
+
+class facebook_data(models.Model):
+    username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    account = models.ForeignKey(selected_connections, on_delete=models.CASCADE)
+    fb_id = models.CharField(max_length=1000,blank=True,null=True)
+    name = models.CharField(max_length=1000,blank=True,null=True)
+    bio = models.CharField(max_length=5000,blank=True,null=True)
+    business_id = models.CharField(max_length=1000,blank=True,null=True)
+    business_name = models.CharField(max_length=1000,blank=True,null=True)
+    category = models.CharField(max_length=1000,blank=True,null=True)
+    fan_count = models.BigIntegerField(blank=True,null=True) # int
+    featured_video_desc = models.CharField(max_length=1000,blank=True,null=True)
+    artists_we_like = models.CharField(max_length=1000,blank=True,null=True)
+    connected_instagram_account = models.CharField(max_length=1000,blank=True,null=True)
+    cover_source = models.URLField(max_length=2000,blank=True,null=True)#url
+    country_page_likes = models.BigIntegerField(blank=True,null=True)#int
+    engagement = models.BigIntegerField(blank=True,null=True)#int
+    impressum = models.CharField(max_length=1000,blank=True,null=True)
+    about = models.CharField(max_length=1000,blank=True,null=True)
+
+    new_like_count = models.BigIntegerField(blank=True,null=True)#int
+    overall_star_rating = models.BigIntegerField(blank=True,null=True)#int
+    rating_count = models.BigIntegerField(blank=True,null=True) #int
+    talking_about_count = models.BigIntegerField(blank=True,null=True) #int
+    unread_message_count= models.BigIntegerField(blank=True,null=True) #int
+    unread_notif_count= models.BigIntegerField(blank=True,null=True) #int
+    unseen_message_count= models.BigIntegerField(blank=True,null=True) #int
+
+
+    verification_status= models.CharField(max_length=1000,blank=True,null=True)
+    website = models.CharField(max_length=1000,blank=True,null=True)
+    were_here_count = models.BigIntegerField(blank=True,null=True) #int

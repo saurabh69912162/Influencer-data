@@ -53,14 +53,14 @@ html {
     {%csrf_token%}
        <h4>Common Sync Status - <strong style="color:green">ON</strong></h4>
         <p> Putting Sync Status on On will fetch <strong> Latest Data</strong> every time you visit the insights page.</p>
-        <button type="submit" name="all-off" class="btn btn-warning">Turn OFF Auto Sync for All</button>
+        <button type="submit" name="all-off" class="btn btn-danger">Turn OFF Auto Sync for All</button>
     </form>
     {%else%}
         <form action="." method="POST">
     {%csrf_token%}
             <h4>Common Sync Status - <strong style="color:red">OFF</strong></h4>
             <p>   Putting Sync Status on OFF will fetch <strong> Last Sync</strong> data every time you visit the insights page.</p>
-        <button type="submit" name="all-on" class="btn btn-danger">Turn On Auto Sync for All</button>
+        <button type="submit" name="all-on" class="btn btn-success">Turn On Auto Sync for All</button>
     </form>
     {%endif%}
     <hr>
@@ -73,18 +73,18 @@ html {
  {% for x in selected%}
   <div class="column ">
     <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
-        <div class="card-header"><h4>{{x.provider|title}}</h4></div>
+        <div class="card-header"><h4>{{x.account_name|title}}</h4></div>
   <div class="card-body">
-    <h5 class="card-title">{{x.account_name|title}}</h5>
+    <h5 class="card-title">{{x.provider|title}}</h5>
     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
       {% if x.auto_sync %}
       <div class="alert alert-success" role="alert">
-  <h6>Sync Status - <strong style="color:green">ON</strong></h6>
+  Sync Status - <strong style="color:green">ON</strong>
 </div>
 
       {%else%}
        <div class="alert alert-warning" role="alert">
-  <h6>Sync Status - <strong style="color:red">OFF</strong></h6>
+  Sync Status - <strong style="color:red">OFF</strong>
 </div>
       {%endif%}
       <p class="card-text"><a href="/check-insights/{{x.account_uid}}" class="btn btn-warning">Check Insights</a></p>

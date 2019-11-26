@@ -603,12 +603,105 @@ def insights(request):
     else:
         return redirect('/')
 
+def fetch_facebook_data(user,uid):
+    facebook_data.objects.get_or_create(
+        username = MyUser.objects.get(id = user),
+        account = selected_connections.objects.get(username = MyUser.objects.get(id= user), account_uid= uid)
+    )
+    obj = facebook_data.objects.get(username = MyUser.objects.get(id = user),
+        account = selected_connections.objects.get(username = MyUser.objects.get(id= user), account_uid= uid))
+
+    print(obj)
+
+    account_details = selected_connections.objects.get(username = MyUser.objects.get(id= user), account_uid= uid)
+
+    data = requests.get("https://graph.facebook.com/v4.0/"+account_details.account_uid+"?fields=id%2Cabout%2Cname%2Cbio%2Cbusiness%2Ccategory%2Cfan_count%2Cfeatured_video%2Cartists_we_like%2Cconnected_instagram_account%2Ccover%2Ccountry_page_likes%2Cengagement%2Cimpressum%2Cinfluences%2Cnew_like_count%2Coverall_star_rating%2Cprice_range%2Crating_count%2Ctalking_about_count%2Cunread_message_count%2Cunread_notif_count%2Cunseen_message_count%2Cverification_status%2Cwebsite%2Cwere_here_count%2Cratings.limit(100)%7Brating%7D%2Clikes&access_token="+account_details.long_token)
+    print('response type is ',type(data))
+    print(data.json())
+    json_obj = data.json()
+
+    obj.name = account_details.account_name
+
+    try:
+        obj.bio = json_obj['bio']
+    except:
+        pass
+    
+    obj.fb_id = json_obj['id']
+    
+    try:
+        obj.business_name = json_obj['business_name']
+    except:
+        pass
+
+    try:
+        obj.featured_video_desc = json_obj['featured_video']['description']
+    except:
+        pass
+    
+    try:
+        obj.artists_we_like = json_obj['artists_we_like']
+    except:
+        pass
+    
+    try:
+        obj.connected_instagram_account = json_obj['connected_instagram_account']['id']
+    except:
+        pass
+      
+    try:
+        obj.cover_source = json_obj['cover']['source']
+    except:
+        pass
+
+    try:
+        obj.about = json_obj['about']
+    except:
+        pass
+
+    try:
+        obj.impressum = json_obj['impressum']
+    except:
+        pass
+    obj.category = json_obj['category']
+    obj.fan_count = json_obj['fan_count']
+    obj.country_page_likes = json_obj['country_page_likes']
+    obj.engagement = json_obj['engagement']['count']
+    obj.new_like_count = json_obj['new_like_count']
+    obj.talking_about_count = json_obj['talking_about_count']
+    obj.unread_message_count= json_obj['unread_message_count']
+    obj.unread_notif_count= json_obj['unread_notif_count']
+    obj.unseen_message_count= json_obj['unseen_message_count']
+    obj.were_here_count= json_obj['were_here_count']
+    obj.verification_status= json_obj['verification_status']
+
+    try:
+        obj.website = json_obj['website']
+    except:
+        pass
+
+    try:
+        obj.rating_count = json_obj['rating_count']
+    except:
+        pass
+
+    try:
+        obj.overall_star_rating = json_obj['overall_star_rating']
+    except:
+        pass
+
+    obj.save()
+    return data
+
+
 
 def check_insights(request,uid):
     if request.user.is_authenticated:
         user = MyUser.objects.get(id = request.user.id)
+        user_id = MyUser.objects.get(id=request.user.id).id
         selected = get_object_or_404(selected_connections, username = user, account_uid = uid)
         isenabled = selected.auto_sync
+
 
         if selected.auto_sync == True:
             print('Fetching Data')
@@ -616,7 +709,15 @@ def check_insights(request,uid):
             selected.save()
             pro = selected.provider
             if pro == 'facebook':
-                print('facebook')
+                facebook_data.objects.get_or_create(
+                    username=MyUser.objects.get(id=user_id),
+                    account=selected_connections.objects.get(username=MyUser.objects.get(id=user_id), account_uid=uid)
+                )
+                final_obj = facebook_data.objects.get(username=MyUser.objects.get(id=user_id),
+                                                      account=selected_connections.objects.get(
+                                                          username=MyUser.objects.get(id=user_id), account_uid=uid))
+
+                fetch_facebook_data(user_id,uid)
             elif pro == 'linkedin':
                 print('linkedin')
             elif pro == 'google':
@@ -627,9 +728,32 @@ def check_insights(request,uid):
                 print('instagram')
             elif pro == 'pinterest':
                 print('pinterest')
+            else:
+                pass
 
         else:
-            print('permit data fetching request')
+            pro = selected.provider
+            if pro == 'facebook':
+                facebook_data.objects.get_or_create(
+                    username=MyUser.objects.get(id=user_id),
+                    account=selected_connections.objects.get(username=MyUser.objects.get(id=user_id), account_uid=uid)
+                )
+                final_obj = facebook_data.objects.get(username=MyUser.objects.get(id=user_id),
+                                                account=selected_connections.objects.get(
+                                                    username=MyUser.objects.get(id=user_id), account_uid=uid))
+
+            elif pro == 'linkedin':
+                print('linkedin')
+            elif pro == 'google':
+                print('google')
+            elif pro == 'twitter':
+                print('twitter')
+            elif pro == 'instagram':
+                print('instagram')
+            elif pro == 'pinterest':
+                print('pinterest')
+            else:
+                pass
 
 
         if request.method=='POST':
@@ -638,6 +762,24 @@ def check_insights(request,uid):
                 print('Fetching Data')
                 selected.last_sync = datetime.now()
                 selected.save()
+
+                pro = selected.provider
+                if pro == 'facebook':
+                    fetch_facebook_data(user_id, uid)
+                elif pro == 'linkedin':
+                    print('linkedin')
+                elif pro == 'google':
+                    print('google')
+                elif pro == 'twitter':
+                    print('twitter')
+                elif pro == 'instagram':
+                    print('instagram')
+                elif pro == 'pinterest':
+                    print('pinterest')
+                else:
+                    pass
+
+
 
             elif 'btn-on' in request.POST:
                 print('button On')
@@ -657,7 +799,7 @@ def check_insights(request,uid):
             else:
                 pass
 
-        return render(request,'accounts/check-insights.html',{'selected':selected,'isenabled':isenabled})
+        return render(request,'accounts/check-insights.html',{'selected':selected,'isenabled':isenabled,'final_obj':final_obj})
     else:
         return redirect('/')
 def search(request):
