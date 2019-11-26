@@ -1,6 +1,7 @@
 
-<form method="POST" action='.'>
+
+<form method="POST" action='.' class="form-group">
 	{% csrf_token %}
 	{{ form.as_p }}
-	<input type="submit" name="Submit">
+	<input type="submit" class="btn btn-success" name="Submit">
 </form>

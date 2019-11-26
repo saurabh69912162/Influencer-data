@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Creator</title>
+<style>
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.column {
+  float: left;
+  width: 30%;
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
+
+@media screen and (max-width: 650px) {
+  .column {
+    width: 100%;
+    display: block;
+  }
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.container {
+  padding: 0 16px;
+}
+
+.container::after, .row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+</style>
+</head>
+<body>
+{% extends 'accounts/base.html' %}
+{% block content %}
+<div class="container" style="margin-top:30px;">
+    <h1 > Insights</h1><br>
+
+    {%if allon%}
+    <form action="." method="POST">
+    {%csrf_token%}
+       <h4>Common Sync Status - <strong style="color:green">ON</strong></h4>
+        <p> Putting Sync Status on On will fetch <strong> Latest Data</strong> every time you visit the insights page.</p>
+        <button type="submit" name="all-off" class="btn btn-warning">Turn OFF Auto Sync for All</button>
+    </form>
+    {%else%}
+        <form action="." method="POST">
+    {%csrf_token%}
+            <h4>Common Sync Status - <strong style="color:red">OFF</strong></h4>
+            <p>   Putting Sync Status on OFF will fetch <strong> Last Sync</strong> data every time you visit the insights page.</p>
+        <button type="submit" name="all-on" class="btn btn-danger">Turn On Auto Sync for All</button>
+    </form>
+    {%endif%}
+    <hr>
+
+</div>
+
+{% if selected%}
+<div class="container">
+<div class="row">
+ {% for x in selected%}
+  <div class="column ">
+    <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
+        <div class="card-header"><h4>{{x.provider|title}}</h4></div>
+  <div class="card-body">
+    <h5 class="card-title">{{x.account_name|title}}</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+      {% if x.auto_sync %}
+      <div class="alert alert-success" role="alert">
+  <h6>Sync Status - <strong style="color:green">ON</strong></h6>
+</div>
+
+      {%else%}
+       <div class="alert alert-warning" role="alert">
+  <h6>Sync Status - <strong style="color:red">OFF</strong></h6>
+</div>
+      {%endif%}
+      <p class="card-text"><a href="/check-insights/{{x.account_uid}}" class="btn btn-warning">Check Insights</a></p>
+
+  </div>
+</div>
+
+
+
+
+
+  </div>
+
+
+
+    {%endfor%}
+
+</div>
+
+
+{%else%}
+<div class="container">
+    <div class="alert alert-danger" role="alert">
+ <h4>
+     <strong>Opps!</strong> No Account selected, make sure you have selected some accounts to view insights.
+    </h4><hr>
+        <a href="/connect">Follow this link</a> to add or connect accounts.
+</div>
+</div>
+
+{%endif%}
+
+{% endblock %}
+</body>
+
+</html>

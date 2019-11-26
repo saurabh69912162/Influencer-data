@@ -39,29 +39,58 @@
 <!--  }-->
 <!--}-->
 </style>
-{% block content %}
-{% endblock %}
+
 {%if request.user.is_authenticated%}
+<nav class="navbar navbar-expand-lg   navbar-dark bg-dark">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="#">Creatosaurus</a>
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 
-
-<div class="footer" >
-    <span><a style="text-decoration:none;color:white;padding:5px"  href="/profile" >Dashboard</a></span>
-    <span><a style="text-decoration:none;color:white;padding:5px"  href="/profile/edit" >Edit</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <span><a style="text-decoration:none;color:white;padding:5px"  href="/profile/details" >Edit Details</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <span><a style="text-decoration:none;color:white;padding:5px"  href="/password" >Change Password</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <span><a style="text-decoration:none;color:white;padding:5px"  href="/configure" >Configure Accounts </a></span>
-    <span><a style="text-decoration:none;color:white;padding:5px"  href="/admin" >Admin</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <span><a style="text-decoration:none;color:white;padding:5px"  href="/logout" >Logout</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-</div>
+    </ul>
+      <a class="nav-link" style="color:white" href="/profile" >Dashboard</a>
+       <a class="nav-link" style="color:white" href="/profile/edit" >Edit</a>
+      <a class="nav-link" style="color:white" href="/profile/details" >Edit Details</a>
+      <a class="nav-link"  style="color:white" href="/password" >Change Password</a>
+      <a class="nav-link" style="color:white" href="/configure" >Configure Accounts</a>
+      <a class="nav-link" style="color:white" href="/search" >Search</a>
+      <a class="nav-link" style="color:white" href="/insights" >Insights</a>
+       <a class="nav-link" style="color:white" href="/admin" >Admin</a>
+      <a class="nav-link" style="color:white" href="/logout" >Logout</a>
+  </div>
+</nav>
 
 {%else%}
-<div class="footer">
- <span><a style="text-decoration:none;color:white;"  href="/admin" >Admin</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <span><a style="text-decoration:none;color:white;"  href="/register" >Register</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-</div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="#">Creatosaurus</a>
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+
+    </ul>
+<a  class="nav-link" style="color:white" href="/admin" >Admin</a>
+       <a class="nav-link" style="color:white" href="/privacy-policy" >Privacy Policy</a>
+
+       <a class="nav-link" style="color:white" href="/terms-and-conditions" >Terms and Conditions</a>
+
+   <a class="nav-link" style="color:white" href="/register" >Register</a>
+  </div>
+</nav>
+
 
     {%endif%}
+
+{% block content %}
+
+{% endblock %}
+
+
+
+
 </body>
 </html>

@@ -181,7 +181,8 @@ class selected_connections(models.Model):
     account_uid = models.CharField(max_length=500, unique=True, blank=True, null=True)
     selected = models.BooleanField(default=False)
     within_limit = models.BooleanField(default=True)
-
+    auto_sync = models.BooleanField(default=False)
+    last_sync = models.DateTimeField(blank=True,null=True)
     def __str__(self):
         return str(self.account_uid)
 

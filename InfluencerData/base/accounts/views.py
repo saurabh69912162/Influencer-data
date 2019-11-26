@@ -105,10 +105,16 @@ def profile(request):
     user_name_ = request.user.username
     if userme.is_authenticated:
         if request.user.category == 'Creator':
-            # check_creator(userme, user_name_)
-            user_obj = User.objects.get(id = request.user.id)
 
-            return render(request, 'accounts/creator.html', {'user_obj':user_obj,})
+            try:
+                connected = SocialAccount.objects.filter(user=request.user.id)
+                selected = selected_connections.objects.filter(username= MyUser.objects.get(id = request.user.id))
+            except:
+                selected = ''
+
+            user_obj = User.objects.get(id = request.user.id)
+            print('selected :: ',selected)
+            return render(request, 'accounts/creator.html', {'user_obj':user_obj,'selected':selected,'connected':connected})
         elif request.user.category == 'Business':
 
             user_obj = User.objects.get(id = request.user.id)
@@ -560,3 +566,99 @@ def configure(request):
     return render(request, 'accounts/configure.html', {'account': account, 'not_selected': not_selected,
                                                        'selected': selected, 'error_connected': error_connected,
                                                        'pack_error': pack_error, })
+
+
+
+
+
+def insights(request):
+    if request.user.is_authenticated:
+        selected = selected_connections.objects.filter(username = MyUser.objects.get(id = request.user.id))
+        allon = True
+
+        for x in selected:
+            if x.auto_sync == False:
+                allon = False
+                break
+            else:
+                allon = True
+
+
+        if request.method == 'POST':
+            if 'all-off' in request.POST:
+                selected = selected_connections.objects.filter(username=MyUser.objects.get(id=request.user.id))
+                for x in selected:
+                    x.auto_sync = False
+                    x.save()
+                return redirect('/insights')
+
+            if 'all-on' in request.POST:
+                selected = selected_connections.objects.filter(username=MyUser.objects.get(id=request.user.id))
+                for x in selected:
+                    x.auto_sync = True
+                    x.save()
+                return redirect('/insights')
+
+        return render(request, 'accounts/insights.html', {'selected':selected,'allon':allon})
+    else:
+        return redirect('/')
+
+
+def check_insights(request,uid):
+    if request.user.is_authenticated:
+        user = MyUser.objects.get(id = request.user.id)
+        selected = get_object_or_404(selected_connections, username = user, account_uid = uid)
+        isenabled = selected.auto_sync
+
+        if selected.auto_sync == True:
+            print('Fetching Data')
+            selected.last_sync = datetime.now()
+            selected.save()
+            pro = selected.provider
+            if pro == 'facebook':
+                print('facebook')
+            elif pro == 'linkedin':
+                print('linkedin')
+            elif pro == 'google':
+                print('google')
+            elif pro == 'twitter':
+                print('twitter')
+            elif pro == 'instagram':
+                print('instagram')
+            elif pro == 'pinterest':
+                print('pinterest')
+
+        else:
+            print('permit data fetching request')
+
+
+        if request.method=='POST':
+            if 'btn-sync-now' in request.POST:
+                print(request.POST['btn-sync-now'])
+                print('Fetching Data')
+                selected.last_sync = datetime.now()
+                selected.save()
+
+            elif 'btn-on' in request.POST:
+                print('button On')
+                print(request.POST['btn-on'])
+                obj = selected_connections.objects.get( username = user, account_uid = uid)
+                obj.auto_sync = True
+                obj.last_sync = datetime.now()
+                obj.save()
+                return redirect('/check-insights/'+obj.account_uid)
+            elif 'btn-off' in request.POST:
+                print(request.POST['btn-off'])
+                print('button OFF')
+                obj = selected_connections.objects.get( username = user, account_uid = uid)
+                obj.auto_sync = False
+                obj.save()
+                return redirect('/check-insights/'+obj.account_uid)
+            else:
+                pass
+
+        return render(request,'accounts/check-insights.html',{'selected':selected,'isenabled':isenabled})
+    else:
+        return redirect('/')
+def search(request):
+    return render(request, 'accounts/search.html', {})

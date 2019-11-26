@@ -1,8 +1,17 @@
 {% extends 'accounts/base.html' %}
 {% block content %}
+<div class="container">
 
-<h1 style="margin:auto;width: 5%;padding: 10px;">Login</h1>
-<div class="center" style="margin: auto; text-align:center;width: 25%;border: 3px solid black;padding: 10px;">
+
+    <h1 style="margin:30px; text-align:center" class="display-4">Creatosaurus</h1>
+
+</div>
+
+</div>
+    <div class="container">
+        <h1 style="margin:10px; text-align:center" >Login</h1>
+<div class=" form-group" style="margin: auto; text-align:center;width: 25%;padding: 30px;">
 {% include 'accounts/form.html' with form=form %}
+</div>
 </div>
 {% endblock %}
