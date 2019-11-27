@@ -19,6 +19,8 @@ from .models import *
 import requests
 import base64
 from datetime import datetime
+from requests_oauthlib import OAuth1
+import requests
 User = get_user_model()
 
 
@@ -364,8 +366,37 @@ def configure(request):
 
     elif 'pinterest' in request.POST:
 
-        print(request.POST['pinterest'])
+        if SocialAccount.objects.filter(user=request.user.id, id=request.POST['pinterest']).exists():
+            if not selected_connections.objects.filter(
+                    account_uid=SocialAccount.objects.get(user=request.user.id, id=request.POST['pinterest']).uid):
 
+                obj_create = selected_connections()
+                obj_create.username = MyUser.objects.get(id=request.user.id)
+                obj_create.dirtybit = request.user.dirtybit
+                obj_create.provider = 'pinterest'
+                obj_create.account_token = SocialToken.objects.get(id=request.POST['pinterest'])
+                obj_create.access_token = SocialToken.objects.get(id=request.POST['pinterest'])
+
+                obj_create.access_token_secret = ''
+
+                obj_create.extra_data = SocialAccount.objects.get(user=request.user.id,
+                                                                  id=request.POST['pinterest']).extra_data
+
+                obj_create.account_name = SocialAccount.objects.get(user=request.user.id,
+                                                                    id=request.POST['pinterest']).extra_data['first_name']
+
+                obj_create.account_uid = SocialAccount.objects.get(user=request.user.id,
+                                                                   id=request.POST['pinterest']).uid
+                obj_create.selected = True
+                obj_create.save()
+
+                data.total_seleceted_connections += 1
+                data.save()
+                init_noti(obj_create.username, 300)
+
+            else:
+                error_connected = 'Account Already Connected !'
+                pass
 
     elif 'linkedin' in request.POST:
         import requests
@@ -716,6 +747,45 @@ def fetch_linkedin_data(user, uid):
     obj.save()
     return True
 
+def fetch_twitter_data(user,uid):
+    twitter_data.objects.get_or_create(
+        username=MyUser.objects.get(id=user),
+        account=selected_connections.objects.get(username=MyUser.objects.get(id=user), account_uid=uid)
+    )
+    obj = twitter_data.objects.get(username=MyUser.objects.get(id=user),
+                                    account=selected_connections.objects.get(username=MyUser.objects.get(id=user),
+                                                                             account_uid=uid))
+
+    home = selected_connections.objects.get(username=user, account_uid=uid)
+    TWITTER_CONSUMER_KEY = '1Vd9j6RGv01MeGpMhqbgGhP5l'
+    TWITTER_CONSUMER_SECRET = 'XxXOZD0mwVrdEcKFkT2qsIlP7scJKIBhqBueH03sw01rEilQjJ'
+    FETCH_TIMELINE = 'https://api.twitter.com/1.1/statuses/user_timeline.json?user_id=' + home.account_uid + '&count=2'
+    oauth = OAuth1(TWITTER_CONSUMER_KEY,
+                   client_secret=TWITTER_CONSUMER_SECRET,
+                   resource_owner_key=str(home.access_token),
+                   resource_owner_secret=str(home.access_token_secret))
+    req = requests.get(url=FETCH_TIMELINE, auth=oauth)
+    json_data = req.json()
+
+    obj.twitter_id = json_data[0]['user']['id']
+    obj.name = json_data[0]['user']['name']
+    obj.screen_name = json_data[0]['user']['screen_name']
+    obj.location = json_data[0]['user']['location']
+    obj.description = json_data[0]['user']['description']
+    obj.website = json_data[0]['user']['entities']['url']['urls'][0]['display_url']
+    obj.fan_count = json_data[0]['user']['followers_count']
+    obj.friends_count = json_data[0]['user']['friends_count']
+    obj.listed_count = json_data[0]['user']['listed_count']
+    obj.created_at = json_data[0]['user']['created_at']
+    obj.favourites_count = json_data[0]['user']['favourites_count']
+    obj.verified = json_data[0]['user']['verified']
+    obj.profile_background_color = json_data[0]['user']['profile_background_color']
+    obj.profile_background_image_url_https = json_data[0]['user']['profile_background_image_url_https']
+    obj.profile_image_url_https =  json_data[0]['user']['profile_image_url_https']
+    obj.profile_banner_url = json_data[0]['user']['profile_banner_url']
+    obj.save()
+    return True
+
 def check_insights(request,uid):
     if request.user.is_authenticated:
         user = MyUser.objects.get(id = request.user.id)
@@ -753,7 +823,17 @@ def check_insights(request,uid):
             elif pro == 'google':
                 print('google')
             elif pro == 'twitter':
-                print('twitter')
+                twitter_data.objects.get_or_create(
+                    username=MyUser.objects.get(id=user_id),
+                    account=selected_connections.objects.get(username=MyUser.objects.get(id=user_id), account_uid=uid)
+                )
+                final_obj = twitter_data.objects.get(username=MyUser.objects.get(id=user_id),
+                                                      account=selected_connections.objects.get(
+                                                          username=MyUser.objects.get(id=user_id), account_uid=uid))
+
+
+                fetch_twitter_data(user_id,uid)
+
             elif pro == 'instagram':
                 print('instagram')
             elif pro == 'pinterest':
@@ -785,7 +865,15 @@ def check_insights(request,uid):
             elif pro == 'google':
                 print('google')
             elif pro == 'twitter':
-                print('twitter')
+                twitter_data.objects.get_or_create(
+                    username=MyUser.objects.get(id=user_id),
+                    account=selected_connections.objects.get(username=MyUser.objects.get(id=user_id), account_uid=uid)
+                )
+                final_obj = twitter_data.objects.get(username=MyUser.objects.get(id=user_id),
+                                                     account=selected_connections.objects.get(
+                                                         username=MyUser.objects.get(id=user_id), account_uid=uid))
+
+
             elif pro == 'instagram':
                 print('instagram')
             elif pro == 'pinterest':
@@ -809,7 +897,7 @@ def check_insights(request,uid):
                 elif pro == 'google':
                     print('google')
                 elif pro == 'twitter':
-                    print('twitter')
+                    fetch_twitter_data(user_id, uid)
                 elif pro == 'instagram':
                     print('instagram')
                 elif pro == 'pinterest':

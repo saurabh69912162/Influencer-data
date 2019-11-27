@@ -113,3 +113,17 @@ class linkedin_data_admin(admin.ModelAdmin):
 
 admin.site.register(linkedin_data, linkedin_data_admin)
 
+
+
+class twitter_data_admin(admin.ModelAdmin):
+
+
+	list_display = ("username","account","twitter_id","name","description","fan_count",
+	"screen_name","location","website","fan_count","friends_count","listed_count",
+	"created_at","favourites_count","verified","profile_background_color","profile_background_image_url_https","profile_image_url_https",
+	"profile_banner_url")
+	filter_horizontal = ()
+
+admin.site.register(twitter_data, twitter_data_admin)
+
+

@@ -1,38 +1,42 @@
-# import random
-# import string
+# import os
+# import google.oauth2.credentials
+# import google_auth_oauthlib.flow
+# from googleapiclient.discovery import build
+# from googleapiclient.errors import HttpError
+# from google_auth_oauthlib.flow import InstalledAppFlow
 #
-# def randomString(stringLength=64):
-#     letters = string.ascii_lowercase
-#     return ''.join(random.choice(letters) for i in range(stringLength))
+# SCOPES = ['https://www.googleapis.com/auth/yt-analytics.readonly']
 #
+# API_SERVICE_NAME = 'youtubeAnalytics'
+# API_VERSION = 'v2'
+# CLIENT_SECRETS_FILE = 'client_secret_800715579938-epvc5lcfbjs1quj3rafo0q39f0tojnah.apps.googleusercontent.com.json'
+# def get_service():
+#   flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
+#   credentials = flow.run_console()
+#   return build(API_SERVICE_NAME, API_VERSION, credentials = credentials)
 #
-# print ("Random String is ", randomString() )
+# def execute_api_request(client_library_function, **kwargs):
+#   response = client_library_function(
+#     **kwargs
+#   ).execute()
+#
+#   print(response)
+#
+# if __name__ == '__main__':
+#   # Disable OAuthlib's HTTPs verification when running locally.
+#   # *DO NOT* leave this option enabled when running in production.
+#   os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+#
+#   youtubeAnalytics = get_service()
+#   execute_api_request(
+#       youtubeAnalytics.reports().query,
+#       ids='channel==MINE',
+#       startDate='2017-01-01',
+#       endDate='2017-12-31',
+#       metrics='estimatedMinutesWatched,views,likes,subscribersGained',
+#       dimensions='day',
+#       sort='day'
+#   )
 
-#
-# import datetime
-#
-# x = datetime.datetime(2018, 6, 1)
-#
-# # print(x)
-#
-#
-# import time
-# import datetime
-# # d = datetime.date(2015,21,5)
-# #
-# # print(time.mktime(d.timetuple())
-# #       )
-# from datetime import datetime, timedelta
-# curr = datetime.now()
-# fut = datetime.now() + timedelta(days = 30)
-# import datetime
-# d = datetime.datetime(fut.year, fut.month, fut.day)
-# epoch = time.mktime(d.timetuple())
-# current = int(epoch)
-# print(current)
-# print(curr)
 
-string = "id,name,bio,business,category,fan_count,featured_video,artists_we_like,connected_instagram_account,cover,country_page_likes,engagement,impressum,influences,new_like_count,overall_star_rating,price_range,rating_count,talking_about_count,unread_message_count,unread_notif_count,unseen_message_count,verification_status,website,were_here_count,ratings.limit(100){rating},likes"
-# new = string.split(',')
-# for x in new:
-#     print(x)
+

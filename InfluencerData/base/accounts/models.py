@@ -301,3 +301,29 @@ class linkedin_data(models.Model):
     name = models.CharField(max_length=1000, blank=True, null=True)
     fan_count = models.BigIntegerField(blank=True, null=True, default=0)  # connections -> currently does not have permission for connections API
     headline = models.CharField(max_length=2000, blank=True, null=True)
+
+
+
+class twitter_data(models.Model):
+    username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    account = models.ForeignKey(selected_connections, on_delete=models.CASCADE)
+    twitter_id = models.CharField(max_length=1000, blank=True, null=True)
+    name = models.CharField(max_length=1000, blank=True, null=True)
+    screen_name = models.CharField(max_length=1000, blank=True, null=True)
+    location = models.CharField(max_length=1000, blank=True, null=True)
+    description = models.CharField(max_length=1000, blank=True, null=True)
+    website = models.CharField(max_length=1000, blank=True, null=True)
+    fan_count = models.BigIntegerField(blank=True, null=True, default=0)  # followers
+    friends_count = models.BigIntegerField(blank=True, null=True, default=0)
+    listed_count = models.BigIntegerField(blank=True, null=True, default=0)
+    created_at = models.CharField(max_length=1000, blank=True, null=True)
+    favourites_count = models.BigIntegerField(blank=True, null=True, default=0)
+    verified = models.BooleanField(default=False)
+    profile_background_color = models.CharField(max_length=1000, blank=True, null=True)
+    profile_background_image_url_https = models.CharField(max_length=1000, blank=True, null=True)
+    profile_image_url_https = models.CharField(max_length=1000, blank=True, null=True)
+    profile_banner_url = models.CharField(max_length=1000, blank=True, null=True)
+
+
+
+# class pinterest_data(models.Model):

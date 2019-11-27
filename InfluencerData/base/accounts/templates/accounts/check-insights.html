@@ -251,7 +251,7 @@ html {
 
 <div class="column">
     <div class="card bg-light mb-3" style="max-width: 18rem;">
-        <div class="card-header"><strong>Unread Notif Count </strong></div>
+        <div class="card-header"><strong>Unread Notification Count </strong></div>
             <div class="card-body">
             <h5 class="card-title" style="color:red">{{final_obj.unread_notif_count}}</h5>
             </div>
@@ -302,7 +302,121 @@ html {
     {%elif selected.provider == 'google'%}
     google
 {%elif selected.provider == 'twitter'%}
-twitter
+
+ {%if final_obj.profile_banner_url%}
+    <div class="text-center" style="margin-bottom:10px;">
+  <img src="{{final_obj.profile_banner_url}}" class="rounded img-fluid" style="width:1200px;height:400px;">
+
+
+
+</div>
+    {%endif%}
+<div class="jumbotron jumbotron-fluid bg-info">
+  <div class="container">
+
+      <h1 class="display-4" style="color:white">Social Reach : {{final_obj.fan_count}}</h1>
+      {%if final_obj.description%}
+      <hr>
+    <p class="lead" style="color:white"><img src="{{final_obj.profile_image_url_https}}" class="rounded" > {{final_obj.description}}</p>
+      {%endif%}
+  </div>
+</div>
+
+
+    <div class="row container">
+
+
+<div class="column">
+    <div class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="card-header"><strong>Username</strong></div>
+            <div class="card-body">
+            <h5 class="card-title" style="color:red">@{{final_obj.screen_name|title}}</h5>
+            </div>
+        </div>
+</div>
+
+<div class="column">
+    <div class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="card-header"><strong>Followers</strong></div>
+            <div class="card-body">
+            <h5 class="card-title" style="color:red">{{final_obj.fan_count}}</h5>
+            </div>
+        </div>
+</div>
+
+
+<div class="column">
+    <div class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="card-header"><strong>Following</strong></div>
+            <div class="card-body">
+            <h5 class="card-title" style="color:red">{{final_obj.friends_count}}</h5>
+            </div>
+        </div>
+</div>
+
+<div class="column">
+    <div class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="card-header"><strong>Verified</strong></div>
+            <div class="card-body">
+            <h5 class="card-title" style="color:red">{{final_obj.verified}}</h5>
+            </div>
+        </div>
+</div>
+
+
+<div class="column">
+    <div class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="card-header"><strong>Location</strong></div>
+            <div class="card-body">
+            <h5 class="card-title" style="color:red">{{final_obj.location}}</h5>
+            </div>
+        </div>
+</div>
+
+
+ <div class="column">
+    <div class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="card-header"><strong>Account Created At</strong></div>
+            <div class="card-body">
+            <h5 class="card-title" style="color:red">{{final_obj.created_at}}</h5>
+            </div>
+        </div>
+</div>
+
+
+ <div class="column">
+    <div class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="card-header"><strong>Favourites Count</strong></div>
+            <div class="card-body">
+            <h5 class="card-title" style="color:red">{{final_obj.favourites_count}}</h5>
+            </div>
+        </div>
+</div>
+
+
+ <div class="column">
+    <div class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="card-header"><strong>Listed Count</strong></div>
+            <div class="card-body">
+            <h5 class="card-title" style="color:red">{{final_obj.listed_count}}</h5>
+            </div>
+        </div>
+</div>
+
+<div class="column">
+    <div class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="card-header"><strong>Website</strong></div>
+            <div class="card-body">
+                <h5 class="card-title" style="color:red"><a href="//{{final_obj.website}}">{{final_obj.website}}</a></h5>
+            </div>
+        </div>
+</div>
+
+</div>
+
+
+
+
 {%elif selected.provider == 'linkedin'%}
 <div class="jumbotron jumbotron-fluid bg-info">
   <div class="container">
