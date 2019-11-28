@@ -89,13 +89,6 @@ class user_connection_data_admin(admin.ModelAdmin):
 admin.site.register(user_connection_data, user_connection_data_admin)
 
 
-class notification_pannel_admin(admin.ModelAdmin):
-
-	list_display = ('username','timestamp','read_hit','mark_as_read_hit','read_hit_time','message','follow_link','u_code')
-	filter_horizontal = ()
-
-admin.site.register(notification_pannel, notification_pannel_admin)
-
 class facebook_data_admin(admin.ModelAdmin):
 
 
@@ -127,3 +120,36 @@ class twitter_data_admin(admin.ModelAdmin):
 admin.site.register(twitter_data, twitter_data_admin)
 
 
+class youtube_data_admin(admin.ModelAdmin):
+
+
+	list_display = ("username","account","youtube_id","name","description","fan_count",
+	"views","videos_count","link","hit",)
+	filter_horizontal = ()
+
+admin.site.register(youtube_data, youtube_data_admin)
+
+class notifications_admin(admin.ModelAdmin):
+
+
+	list_display = ("username","sender","message","sender_url","notification_type","datetime","read","mark_as_read_all","read_datetime")
+	filter_horizontal = ()
+
+admin.site.register(notifications, notifications_admin)
+
+
+class search_admin(admin.ModelAdmin):
+
+	list_display = ("username","datetime","location","platform","category","reach")
+	filter_horizontal = ()
+
+admin.site.register(search, search_admin)
+
+
+
+'''
+
+
+
+
+'''

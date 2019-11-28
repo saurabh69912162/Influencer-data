@@ -1,0 +1,59 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+
+<div class="container" style="margin-top:30px;margin-bottom:30px">
+<h1 style="margin-top:30px;margin-bottom:30px">Notifications</h1>
+    <form action="/notifications/" method="POST">
+        {%csrf_token%}
+    <button type="submit" class="btn btn-danger" name="allread" value="{{x.id}}">Mark All As Read</button>
+    </form>
+<hr>
+
+
+
+
+  <div class="row">
+    <div class="col-sm-3 col-md-6 col-lg-6" >
+        <h4>Work Notifications</h4>
+ {%if work%}
+          {%for x in work %}
+        <div class="alert alert-primary" role="alert">
+            <h5>Sender - <strong>@{{x.sender|title}}</strong></h5>
+  {{x.message}}<br><a href="{{x.sender_url}}" class="alert-link"> Visit Profile</a>
+            <br>{{x.datetime}}
+             <form action="/notifications/" method="POST">
+        {%csrf_token%}
+    <button type="submit" class="btn btn-warning btn-sm"  value="{{x.id}}" name="markread">Mark As Read</button>
+    </form>
+</div>
+        {%endfor%}
+  {%else%}
+        <h2>All Caught Up!</h2>
+        {%endif%}
+
+    </div>
+
+    <div class="col-sm-9 col-md-6 col-lg-6" >
+
+<h4>Collab Notifications</h4>
+  {%if collab%}
+         {%for x in collab%}
+        <div class="alert alert-primary" role="alert">
+            <h5>Sender - <strong>@{{x.sender|title}}</strong></h5>
+  {{x.message}}<br><a href="{{x.sender_url}}" class="alert-link">Visit Profile</a>
+           <br>{{x.datetime}}
+             <form action="/notifications/" method="POST">
+        {%csrf_token%}
+    <button type="submit" class="btn btn-warning btn-sm" name="allread">Mark As Read</button>
+    </form>
+</div>
+        {%endfor%}
+  {%else%}
+        <h2>All Caught Up!</h2>
+        {%endif%}
+
+
+    </div>
+  </div>
+</div>
+{% endblock %}

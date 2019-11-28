@@ -1,0 +1,159 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+   <img src="https://cdn.pixabay.com/photo/2019/11/07/17/07/universe-4609408_1280.jpg" class="img-fluid" style="width:100%;height:300px;margin-bottom:20px">
+
+<div class="container" style="margin-top:30px;margin-bottom:30px">
+
+    <h1>@{{obj.username}} {%if obj.cache_hit%}<img src="https://img.icons8.com/color/48/000000/verified-account.png">{%endif%} </h1>
+<hr>
+        {%if alertwork%}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Boom! </strong>{{alertwork}}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+    {%endif%}
+
+        {%if samesender %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Holy guacamole! </strong>{{samesender}}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+    {%endif%}
+
+    {%if alertcollab%}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Boom! </strong>{{alertcollab}}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+    {%endif%}
+
+
+   <div class="jumbotron jumbotron-fluid" style="margin-top:30px;margin-bottom:30px">
+  <div class="container">
+      <h1 class="display-4">Total Social Reach - <strong>{{count}}+</strong></h1>
+      <p class="lead">This is accumilative reach that <strong>@{{obj.username|title}}</strong> have based on the recent data.</p>
+  </div>
+</div>
+    <form action="." method="POST">
+        {%csrf_token%}
+    <button type="submit" class="btn btn-outline-danger" style="margin-left:10px" name="work"><h4>Work with <strong>@{{obj.username|title}}</strong></h4></button>
+    <button type="submit" class="btn btn-outline-info" style="margin-left:10px" name="collab"><h4>Lets Collaborate</h4></button>
+
+    </form>
+    <div class="card-deck" style="margin-top:30px">
+  <div class="card">
+
+    <div class="card-body">
+      <h5 class="card-title">Description</h5>
+      <p class="card-text">{{data.description}}</p>
+        <br>
+        <h5 class="card-title">Skills</h5>
+      <p class="card-text">{{data.skills}}</p>
+        <br>
+        <h5 class="card-title">Category</h5>
+      <p class="card-text">{{data.artist_category}}</p>
+        <br>
+        <h5 class="card-title">Location</h5>
+      <p class="card-text">{{data.location}}</p>
+    </div>
+  </div>
+
+        <div class="card">
+
+
+    <div class="card-body">
+        <h5>Available on Following Platforms</h5>
+
+        {%for x in platforms %}
+          <hr>
+
+      <h5 class="card-title">{{x.account_name|title}}</h5>
+      <p class="card-text">{% if x.provider == 'facebook'%}
+        <img src="https://img.icons8.com/office/30/000000/facebook-new.png">
+          {{x.provider|title}}</p>
+        {%elif x.provider == 'linkedin'%}
+          <img src="https://img.icons8.com/color/30/000000/linkedin-circled.png">
+          {{x.provider|title}}</p>
+          {%elif x.provider == 'google'%}
+          <img src="https://img.icons8.com/offices/30/000000/youtube-play.png">
+
+          Youtube </p>
+
+          {%elif x.provider == 'twitter'%}
+<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="32" height="32" viewBox="0 0 172 172"  style=" fill:#000000;"><g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><path d="M0,172v-172h172v172z" fill="none"></path><g fill="#03a9f4"><path d="M150.5,44.53725c-4.74075,2.09983 -9.83983,3.50092 -15.21842,4.16383c5.46817,-3.2465 9.675,-8.42442 11.64942,-14.54117c-5.117,2.99925 -10.78583,5.203 -16.81658,6.364c-4.816,-5.10625 -11.68525,-8.27392 -19.29625,-8.27392c-14.62,0 -26.47008,11.74617 -26.47008,26.23c0,2.04967 0.24008,4.04558 0.69158,5.98417c-21.9945,-1.10367 -41.50217,-11.55983 -54.55267,-27.42683c-2.29333,3.87717 -3.58333,8.41725 -3.58333,13.20817c0,9.10525 4.66192,17.12117 11.77125,21.844c-4.33942,-0.13258 -8.42442,-1.34017 -12.00058,-3.27517c0,0.07883 0,0.19708 0,0.30817c0,12.72442 9.12675,23.32033 21.22408,25.73192c-2.21092,0.60558 -4.54725,0.94242 -6.95525,0.94242c-1.70925,0 -3.3755,-0.1935 -4.988,-0.48375c3.36833,10.39883 13.14008,17.99908 24.71783,18.22483c-9.05867,7.02333 -20.468,11.23017 -32.8735,11.23017c-2.14283,0 -4.23908,-0.12183 -6.31025,-0.37267c11.72108,7.42108 25.63875,11.77125 40.57767,11.77125c48.67958,0 75.31092,-39.97567 75.31092,-74.65517c0,-1.13592 -0.03583,-2.26825 -0.08958,-3.38625c5.19583,-3.66933 9.675,-8.299 13.21175,-13.588"></path></g></g></svg>
+         {{x.provider|title}}</p>
+          {%endif%}
+
+
+    {%endfor%}
+    </div>
+
+
+  </div>
+
+</div>
+<hr>
+    <h2 style="margin-top:30px;">Individual Social Reach</h2>
+<div class="card-deck text-center" style="margin-top:30px;margin-bottom:30px">
+  <div class="card">
+
+    <div class="card-body">
+        <img src="https://img.icons8.com/office/30/000000/facebook-new.png">
+      <h4 class="card-title">Facebook</h4>
+        <h3 class="card-title">{{facebook_count}}</h3>
+    </div>
+  </div>
+
+<div class="card">
+
+    <div class="card-body">
+        <img src="https://img.icons8.com/offices/30/000000/youtube-play.png">
+      <h4 class="card-title">Youtube</h4>
+        <h3 class="card-title">{{youtube_count}}</h3>
+    </div>
+  </div>
+
+<div class="card">
+    <div class="card-body">
+        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="32" height="32" viewBox="0 0 172 172"  style=" fill:#000000;"><g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><path d="M0,172v-172h172v172z" fill="none"></path><g fill="#03a9f4"><path d="M150.5,44.53725c-4.74075,2.09983 -9.83983,3.50092 -15.21842,4.16383c5.46817,-3.2465 9.675,-8.42442 11.64942,-14.54117c-5.117,2.99925 -10.78583,5.203 -16.81658,6.364c-4.816,-5.10625 -11.68525,-8.27392 -19.29625,-8.27392c-14.62,0 -26.47008,11.74617 -26.47008,26.23c0,2.04967 0.24008,4.04558 0.69158,5.98417c-21.9945,-1.10367 -41.50217,-11.55983 -54.55267,-27.42683c-2.29333,3.87717 -3.58333,8.41725 -3.58333,13.20817c0,9.10525 4.66192,17.12117 11.77125,21.844c-4.33942,-0.13258 -8.42442,-1.34017 -12.00058,-3.27517c0,0.07883 0,0.19708 0,0.30817c0,12.72442 9.12675,23.32033 21.22408,25.73192c-2.21092,0.60558 -4.54725,0.94242 -6.95525,0.94242c-1.70925,0 -3.3755,-0.1935 -4.988,-0.48375c3.36833,10.39883 13.14008,17.99908 24.71783,18.22483c-9.05867,7.02333 -20.468,11.23017 -32.8735,11.23017c-2.14283,0 -4.23908,-0.12183 -6.31025,-0.37267c11.72108,7.42108 25.63875,11.77125 40.57767,11.77125c48.67958,0 75.31092,-39.97567 75.31092,-74.65517c0,-1.13592 -0.03583,-2.26825 -0.08958,-3.38625c5.19583,-3.66933 9.675,-8.299 13.21175,-13.588"></path></g></g></svg>
+      <h4 class="card-title">Twitter</h4>
+        <h3 class="card-title">{{twitter_count}}</h3>
+    </div>
+  </div>
+
+<div class="card">
+    <div class="card-body">
+        <img src="https://img.icons8.com/color/30/000000/linkedin-circled.png">
+      <h4 class="card-title">Linkedin</h4>
+        <h3 class="card-title">{{linkedin_count}}</h3>
+    </div>
+  </div>
+
+<div class="card">
+    <div class="card-body">
+        <img src="https://img.icons8.com/color/30/000000/instagram-new.png">
+      <h4 class="card-title">Instagram</h4>
+        <h3 class="card-title">0</h3>
+    </div>
+  </div>
+
+<div class="card">
+    <div class="card-body">
+        <img src="https://img.icons8.com/color/30/000000/pinterest--v1.png">
+      <h4 class="card-title">Pinterest</h4>
+        <h3 class="card-title">0</h3>
+    </div>
+  </div>
+
+</div>
+
+
+
+</div>
+{% endblock %}

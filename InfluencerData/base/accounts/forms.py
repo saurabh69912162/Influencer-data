@@ -213,5 +213,43 @@ class creator_data(forms.ModelForm):
 
 
 
+class youtube_data_form(forms.ModelForm):
+    class Meta:
+        model = youtube_data
+        fields =("name","description","fan_count",
+	            "views","videos_count","link")
 
 
+category_artist_type= [
+    ('Artist', 'Artist'),
+    ('Business', 'Business'),
+    ('Dancer', 'Dancer'),
+    ('Musician', 'Musician'),
+    ('Rapper', 'Rapper'),
+    ('Youtuber', 'Youtuber'),
+    ('Gamer', 'Gamer'),
+    ('Poet', 'Poet'),
+    ('Writter', 'Writter'),
+    ('Coding', 'Coding'),
+    ]
+
+platform_type= [
+    ('facebook', 'Facebook'),
+    ('instagram', 'Instagram'),
+    ('tikTok', 'TicTok'),
+    ('google', 'Youtube/Google'),
+    ('linkedin', 'Linkedin'),
+    ('twitter', 'Twitter'),
+    ('twitch', 'Twitch'),
+    ('medium', 'Medium'),
+    ('pinterest', 'Pinterest'),
+    ]
+
+
+
+class search_form(forms.ModelForm):
+    platform = forms.CharField(label='Platform', widget=forms.Select(choices=platform_type))
+    category = forms.CharField(label='Category', widget=forms.Select(choices=category_artist_type))
+    class Meta:
+        model = search
+        fields = ("location","platform","category","reach")

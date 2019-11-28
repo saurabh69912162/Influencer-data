@@ -5,11 +5,105 @@
     <title>Creator</title>
 
 </head>
-<body>
+
 {% extends 'accounts/base.html' %}
 {% block content %}
-search.html
-{% endblock %}
-</body>
 
-</html>
+<div class="container" style="margin-top:30px">
+      <h1>Search</h1>
+<form action="." method="POST">
+    {%csrf_token%}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Search</button>
+</form>
+
+
+
+
+
+
+
+
+
+
+<hr>
+{%if obj3%}
+<h3>Location, Platform & Category Based Result</h3>
+{%for x in obj3 %}
+<div class="alert alert-primary">
+    <strong><h5>@{{x.username.username|title}}</h5></strong>
+   Description - {{x.description}}<br>
+    <ul>
+        <li>
+            <strong> Category - {{x.artist_category}}</strong></li>
+        <li><strong> Location - {{x.location}}</strong></li>
+        <li><strong>{{platform|title}} Platform Available - Yes</strong></li>
+    </ul>
+    <a href="/{{x.username.username}}"><h6>Visit Profile</h6></a>
+</div>
+    {%endfor%}
+
+
+
+{%endif%}
+
+
+
+{%if obj2%}
+<h3>Location & Category Based Result</h3>
+{%for x in obj2 %}
+<div class="alert alert-success">
+    <strong><h5>@{{x.username.username|title}}</h5></strong>
+   Description - {{x.description}}<br>
+    <ul><li>
+        <strong> Category - {{x.artist_category}}</strong></li>
+        <li><strong> Location - {{x.location}}</strong></li></ul>
+    <a href="/{{x.username.username}}"><h6>Visit Profile</h6></a>
+</div>
+    {%endfor%}
+
+{%endif%}
+
+
+{%if obj1 %}
+<h3>Location Based Results</h3>
+     {%for x in obj1 %}
+<div class="alert alert-danger">
+    <strong><h5>@{{x.username.username|title}}</h5></strong>
+   Description - {{x.description}}<br>
+    Category - {{x.artist_category}}<br>
+    <li> <strong> Location - {{x.location}}</strong></li>
+    <a href="/{{x.username.username}}"><h6>Visit Profile</h6></a>
+</div>
+    {%endfor%}
+
+{%endif%}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+

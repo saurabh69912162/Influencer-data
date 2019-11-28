@@ -300,7 +300,86 @@ html {
 
 
     {%elif selected.provider == 'google'%}
-    google
+    <div class="jumbotron jumbotron-fluid bg-info">
+  <div class="container">
+
+      <h1 class="display-4" style="color:white">Social Reach : {{final_obj.fan_count}}</h1>
+      {%if final_obj.description%}
+      <hr>
+    <p class="lead" style="color:white"><img src="{{final_obj.profile_image_url_https}}" class="rounded" > {{final_obj.description}}</p>
+      {%endif%}
+  </div>
+</div>
+
+
+    <div class="row container">
+
+
+<div class="column">
+    <div class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="card-header"><strong>Channel Name</strong></div>
+            <div class="card-body">
+            <h5 class="card-title" style="color:red">{{final_obj.name|title}}</h5>
+            </div>
+        </div>
+</div>
+
+<div class="column">
+    <div class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="card-header"><strong>Followers</strong></div>
+            <div class="card-body">
+            <h5 class="card-title" style="color:red">{{final_obj.fan_count}}</h5>
+            </div>
+        </div>
+</div>
+
+
+<div class="column">
+    <div class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="card-header"><strong>Views</strong></div>
+            <div class="card-body">
+            <h5 class="card-title" style="color:red">{{final_obj.views}}</h5>
+            </div>
+        </div>
+</div>
+
+<div class="column">
+    <div class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="card-header"><strong>videos Count</strong></div>
+            <div class="card-body">
+            <h5 class="card-title" style="color:red">{{final_obj.videos_count}}</h5>
+            </div>
+        </div>
+</div>
+
+
+<div class="column">
+    <div class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="card-header"><strong>Link</strong></div>
+            <div class="card-body">
+            <h5 class="card-title" style="color:red">{{final_obj.link}}</h5>
+            </div>
+        </div>
+</div>
+
+
+
+</div>
+
+
+{{final_obj.account}}
+<hr><div class="container">
+
+    <h4 style="margin-bottom:40px">Fill the following Form to update or Create your Youtube Account Data.</h4>
+
+
+    <form style="margin-bottom:40px" action="https://localhost:8000/check-insights/{{final_obj.account}}" method="POST">
+        {%csrf_token%}
+        {{form.as_p}}
+        <button type="submit" class="btn btn-primary" name="submit_det" value="{{final_obj.account}}">Submit For Review</button>
+    </form>
+</div>
+
 {%elif selected.provider == 'twitter'%}
 
  {%if final_obj.profile_banner_url%}
@@ -324,8 +403,6 @@ html {
 
 
     <div class="row container">
-
-
 <div class="column">
     <div class="card bg-light mb-3" style="max-width: 18rem;">
         <div class="card-header"><strong>Username</strong></div>

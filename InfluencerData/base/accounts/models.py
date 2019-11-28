@@ -16,13 +16,6 @@ USERNAME_REGEX = '^[a-zA-Z0-9.+-]*$'
 # from ..celery123 import *
 
 
-def init_noti(username,u_code):
-    print(u_code)
-    obj = notification_pannel()
-    obj.username = username
-    obj.u_code = u_code
-    obj.save()
-    return True
 
 
 class MyUserManager(BaseUserManager):
@@ -198,65 +191,7 @@ class user_connection_data(models.Model):
     dirtybit = models.UUIDField(blank=True, null=True, unique=True)
     total_connections = models.IntegerField(default=0)
     total_seleceted_connections = models.IntegerField(default=0)
-
-
-class notification_pannel(models.Model):
-    username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(default=datetime.now)
-    read_hit = models.BooleanField(default=False)
-    mark_as_read_hit = models.BooleanField(default=False)
-    read_hit_time = models.DateTimeField(blank=True,null=True)
-    message = models.CharField(max_length=256,blank=True,null=True)
-    follow_link = models.URLField(blank=True,null=True)
-    u_code = models.IntegerField(blank=True,null=True)
-
-    def save(self, *args, **kwargs):
-        if self.read_hit == True:
-            self.read_hit_time = datetime.now()
-        if self.mark_as_read_hit == True:
-            self.read_hit_time = datetime.now()
-
-        if self.read_hit == False:
-            if self.u_code == 102:
-                self.message = 'Payment completed Successful,Your Package has been upgraded to L2'
-                self.follow_link = 'https://localhost:8000/package/'
-
-            elif self.u_code == 103:
-                self.message = 'Payment completed Successful,Your Package has been upgraded to L3'
-                self.follow_link = 'https://localhost:8000/package/'
-
-            elif self.u_code == 104:
-                self.message = 'Payment completed Successful,Your Package has been upgraded to L4'
-                self.follow_link = 'https://localhost:8000/package/'
-
-            elif self.u_code == 101: # Degrading WARNING from l2,l3 or l4 to l1
-                self.message = 'Your Package will expire soon, buy a new one in order to keep your data in queue'
-                self.follow_link = 'https://localhost:8000/package/'
-
-            elif self.u_code == 100:  # Degraded
-                self.message = 'Your Package has expired, Upgrade Now'
-                self.follow_link = 'https://localhost:8000/package/'
-
-            elif self.u_code == 200:  # posted successfully
-                self.message = 'Your Scheduled Item has been sent successfully, Add more to the Queue'
-                self.follow_link = 'https://localhost:8000/schedule-this-month/'
-
-            elif self.u_code == 199:  # placed in queue successfully
-                self.message = 'Your Item has been placed in the Queue successfully, Add More'
-                self.follow_link = 'https://localhost:8000/schedule-this-month/'
-
-            elif self.u_code == 300:  # account added in selected accounts
-                self.message = 'Account setup successful'
-            elif self.u_code == 301:  # account added in selected accounts
-                self.message = 'Account disconnected successful'
-                self.follow_link = 'https://localhost:8000/configure'
-
-
-            else:
-                pass
-        super().save(*args, **kwargs)
-
-
+    fan_count = models.BigIntegerField(default=0)
 
 
 
@@ -326,4 +261,45 @@ class twitter_data(models.Model):
 
 
 
-# class pinterest_data(models.Model):
+class youtube_data(models.Model):
+    username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    account = models.ForeignKey(selected_connections, on_delete=models.CASCADE)
+    youtube_id = models.CharField(max_length=1000, blank=True, null=True)
+    name = models.CharField(max_length=1000, blank=True, null=True)
+    fan_count = models.BigIntegerField(blank=True, null=True, default=0)
+    views = models.BigIntegerField(blank=True, null=True, default=0)
+    videos_count =models.BigIntegerField(blank=True, null=True, default=0)
+    description = models.CharField(max_length=1000, blank=True, null=True)
+    link = models.URLField(blank=True,null=True)
+    hit = models.BooleanField(default=False)
+
+
+from datetime import datetime
+
+class notifications(models.Model):
+    username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    sender = models.CharField(max_length=1000, blank=False, null=False)
+    message = models.CharField(max_length=1000, blank=False, null=False)
+    sender_url = models.URLField(blank=False,null=False)
+    notification_type = models.IntegerField(blank=False,null=False)
+    datetime = models.DateTimeField(blank=True,null=True)
+    read = models.BooleanField(default=False)
+    mark_as_read_all = models.BooleanField(default=False)
+    read_datetime = models.DateTimeField(blank=True,null=True)
+
+
+
+class search(models.Model):
+    username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    datetime = models.DateTimeField(default=datetime.now)
+    location = models.CharField(max_length=100,blank=False,null=False)
+    platform = models.CharField(max_length=100, blank=True, null=True)
+    category = models.CharField(max_length=100, blank=False, null=False)
+    reach = models.BigIntegerField(blank=True, null=True)
+'''
+
+
+"username","datetime","location","platform","category","reach"
+
+
+'''

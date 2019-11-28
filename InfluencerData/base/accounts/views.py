@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, get_user_model, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from .forms import UserCreationForm, UserLoginForm, editpro
@@ -127,7 +128,7 @@ def profile(request):
     else:
         return HttpResponseRedirect("/")
 
-
+@login_required(login_url='/')
 def change_password(request):
     userme = request.user
     if userme.is_authenticated:
@@ -147,7 +148,7 @@ def change_password(request):
     else:
         return HttpResponseRedirect("/")
 
-
+@login_required(login_url='/')
 def edit_profile(request):
     userme = request.user
     if userme.is_authenticated:
@@ -211,30 +212,33 @@ def edit_me(request):
     userme = request.user
     if userme.is_authenticated:
 
-        cat = request.user.category
-
+        cat = MyUser.objects.get(id = request.user.id).category
+        print(cat)
         if cat == 'Creator':
 
             if request.method == 'POST':
-                poll = creator_profile_data.objects.get(username=request.user)
-                form = creator_data(request.POST or None, instance=poll)
+                print('POST is is')
+                poll = creator_profile_data.objects.get(username=MyUser.objects.get(id = request.user.id))
+                form = creator_data(request.POST, instance=poll)
                 if form.is_valid():
                     form.save()
                     return redirect('/profile')
+                else:
+                    return HttpResponse('error')
             else:
-                poll = creator_profile_data.objects.get(username=request.user)
+                poll = creator_profile_data.objects.get(username=MyUser.objects.get(id = request.user.id))
                 form = creator_data(instance=poll)
                 context = {'form': form}
                 return render(request, 'accounts/creator_edit.html', context)
-
         elif cat == 'Business':
-
             if request.method == 'POST':
                 poll = business_profile_data.objects.get(username=request.user)
                 form = busi_data(request.POST or None, instance=poll)
                 if form.is_valid():
                     form.save()
                     return redirect('/profile')
+                else:
+                    return HttpResponse('error')
             else:
                 poll = business_profile_data.objects.get(username=request.user)
                 form = busi_data(instance=poll)
@@ -247,13 +251,133 @@ def edit_me(request):
     else:
         return HttpResponseRedirect("/")
 
-
+@login_required(login_url='/')
 def connect(request):
     lmao = SocialAccount.objects.filter(user=request.user.id)
     data = user_connection_data.objects.get(username=request.user.id)
     connection_count = SocialAccount.objects.filter(user=request.user.id).count()
     selection_count = selected_connections.objects.filter(username=request.user.id).count()
     return render(request, 'accounts/lol.html', {'lmao': lmao, 'data': data, })
+
+@login_required(login_url='/')
+def profile_user(request,username):
+    obj = get_object_or_404(MyUser, username = username)
+    alertwork = ''
+    alertcollab = ''
+    samesender = ""
+    if obj.category == 'Creator':
+        data = creator_profile_data.objects.get(username = obj)
+    elif obj.category == 'Business':
+        data = business_profile_data.objects.get(username = obj)
+    else:
+        pass
+
+    platforms = selected_connections.objects.filter(username = obj)
+
+    count = 0
+    facebook_count = 0
+    twitter_count = 0
+    linkedin_count = 0
+    youtube_count = 0
+
+    for x in platforms:
+       if x.provider == 'facebook':
+           try:
+               new_ = facebook_data.objects.get(account = x)
+               count = new_.fan_count + count
+               facebook_count = facebook_count+ new_.fan_count
+           except:
+               pass
+       elif x.provider == 'google':
+           try:
+               new_ = youtube_data.objects.get(account=x)
+               count = new_.fan_count + count
+               youtube_count = youtube_count + new_.fan_count
+           except:
+               pass
+       elif x.provider == 'twitter':
+           try:
+               new_ = twitter_data.objects.get(account=x)
+               count = new_.fan_count + count
+               twitter_count = twitter_count + new_.fan_count
+           except:
+               pass
+       elif x.provider == 'linkedin':
+           try:
+               new_ = linkedin_data.objects.get(account=x)
+               count = new_.fan_count + count
+               linkedin_count = linkedin_count + new_.fan_count
+           except:
+               pass
+       else:
+           pass
+
+
+    if request.method == 'POST':
+        if 'work' in request.POST:
+            from datetime import datetime
+            new_obj = notifications()
+            new_obj.username = MyUser.objects.get(username = username)
+            new_obj.sender = MyUser.objects.get(id = request.user.id).username
+            new_obj.message = 'Hey! '+username+', i would like to work with you. Head over to my profile to contact me. Thanks '+new_obj.sender
+            new_obj.sender_url = 'https://localhost:8000/'+new_obj.sender+'/'
+            new_obj.notification_type = 100
+            new_obj.datetime = datetime.now()
+            if new_obj.sender == username:
+                samesender = "Can't send yourself request!"
+            else:
+                new_obj.save()
+                alertwork = 'Request Sent Successfully!'
+
+
+        elif 'collab' in request.POST:
+            from datetime import datetime
+            new_obj = notifications()
+            new_obj.username = MyUser.objects.get(username=username)
+            new_obj.sender = MyUser.objects.get(id=request.user.id).username
+            new_obj.message = 'Hey! ' + username + ', i would like to collab with you. Head over to my profile to contact me. Thanks ' + new_obj.sender
+            new_obj.sender_url = 'https://localhost:8000/' + new_obj.sender + '/'
+            new_obj.notification_type = 200
+            new_obj.datetime = datetime.now()
+            if new_obj.sender == username:
+                samesender = "Can't send yourself request!"
+            else:
+                new_obj.save()
+                alertcollab = 'Request Sent Successfully!'
+        else:
+            pass
+
+
+    return render(request, 'accounts/profile_page.html', {'obj':obj,'data':data,'platforms':platforms,'count':count,
+                                                           'facebook_count':facebook_count,'twitter_count':twitter_count,
+                                                          'linkedin_count':linkedin_count, 'youtube_count':youtube_count,
+                                                          'alertwork':alertwork,'alertcollab':alertcollab,'samesender':samesender})
+
+@login_required(login_url='/')
+def see_notifications(request):
+    all = notifications.objects.filter(username = MyUser.objects.get(id = request.user.id),mark_as_read_all=False, read=False).order_by('-datetime')[:15]
+    unread = notifications.objects.filter(username = MyUser.objects.get(id = request.user.id),mark_as_read_all=False, read=False)
+    work = notifications.objects.filter(username = MyUser.objects.get(id = request.user.id), notification_type =100, read=False)
+    collab = notifications.objects.filter(username=MyUser.objects.get(id=request.user.id), notification_type=200, read=False)
+
+    if request.method == 'POST':
+        if 'allread' in request.POST:
+            print('all read')
+            for x in unread:
+                x.mark_as_read_all = True
+                x.read = True
+                x.read_datetime = datetime.now()
+                x.save()
+            return  redirect('/notifications')
+
+
+        if 'markread' in request.POST:
+            print('one read')
+            new_obj = notifications.objects.get(username=MyUser.objects.get(id=request.user.id), id = request.POST['markread'])
+            new_obj.read = True
+            new_obj.read_datetime = datetime.now()
+            new_obj.save()
+    return render(request, 'accounts/notifications.html',{'work':work,'collab':collab,'all':all})
 
 
 def long_live_facebook(existing_token):
@@ -266,11 +390,13 @@ def long_live_facebook(existing_token):
     final = extended_token['access_token']
     return final
 
-
+@login_required(login_url='/')
 def facebookconfigure(requset):
     return HttpResponse('nothing here!')
 
 
+
+@login_required(login_url='/')
 def configure(request):
     account = []
     error_connected = ''
@@ -352,7 +478,7 @@ def configure(request):
 
                 data.total_seleceted_connections += 1
                 data.save()
-                init_noti(obj_create.username, 300)
+
 
                 # print(SocialAccount.objects.filter(user=request.user.id, id = request.POST['google']))
                 # print(SocialToken.objects.get(id = request.POST['google']).account)
@@ -392,7 +518,7 @@ def configure(request):
 
                 data.total_seleceted_connections += 1
                 data.save()
-                init_noti(obj_create.username, 300)
+
 
             else:
                 error_connected = 'Account Already Connected !'
@@ -445,7 +571,7 @@ def configure(request):
 
                 data.total_seleceted_connections += 1
                 data.save()
-                init_noti(obj_create.username, 300)
+
 
                 # print(SocialAccount.objects.filter(user=request.user.id, id = request.POST['twitter']))
                 # print(SocialToken.objects.get(id = request.POST['twitter']).account)
@@ -482,7 +608,7 @@ def configure(request):
 
                 data.total_seleceted_connections += 1
                 data.save()
-                init_noti(obj_create.username, 300)
+
 
             else:
                 error_connected = 'Account Already Connected !'
@@ -510,7 +636,7 @@ def configure(request):
 
         # data.total_seleceted_connections -= count_var1
         # data.save()
-        init_noti(MyUser.objects.get(id=request.user.id), 301)
+
 
         return redirect('/configure')
 
@@ -529,7 +655,7 @@ def configure(request):
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['google-remove']).delete()
         # data.total_seleceted_connections -= 1
         # data.save()
-        init_noti(MyUser.objects.get(id=request.user.id), 301)
+
 
         return redirect('/configure')
 
@@ -546,7 +672,7 @@ def configure(request):
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter-remove']).delete()
         # data.total_seleceted_connections -= 1
         # data.save()
-        init_noti(MyUser.objects.get(id=request.user.id), 301)
+
 
         return redirect('/configure')
 
@@ -566,7 +692,7 @@ def configure(request):
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['pinterest-remove']).delete()
         # data.total_seleceted_connections -= 1
         # data.save()
-        init_noti(MyUser.objects.get(id=request.user.id), 301)
+
 
         return redirect('/configure')
 
@@ -586,7 +712,7 @@ def configure(request):
 
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['linkedin-remove']).delete()
 
-        init_noti(MyUser.objects.get(id=request.user.id), 301)
+
 
         return redirect('/configure')
 
@@ -601,7 +727,7 @@ def configure(request):
 
 
 
-
+@login_required(login_url='/')
 def insights(request):
     if request.user.is_authenticated:
         selected = selected_connections.objects.filter(username = MyUser.objects.get(id = request.user.id))
@@ -633,6 +759,8 @@ def insights(request):
         return render(request, 'accounts/insights.html', {'selected':selected,'allon':allon})
     else:
         return redirect('/')
+
+
 
 def fetch_facebook_data(user,uid):
     facebook_data.objects.get_or_create(
@@ -719,6 +847,8 @@ def fetch_facebook_data(user,uid):
 
     obj.save()
     return data
+
+
 
 def fetch_linkedin_data(user, uid):
     linkedin_data.objects.get_or_create(
@@ -822,6 +952,15 @@ def check_insights(request,uid):
 
             elif pro == 'google':
                 print('google')
+                youtube_data.objects.get_or_create(
+                    username=MyUser.objects.get(id=user_id),
+                    account=selected_connections.objects.get(username=MyUser.objects.get(id=user_id), account_uid=uid)
+                )
+                final_obj = youtube_data.objects.get(username=MyUser.objects.get(id=user_id),
+                                                      account=selected_connections.objects.get(
+                                                          username=MyUser.objects.get(id=user_id), account_uid=uid))
+
+
             elif pro == 'twitter':
                 twitter_data.objects.get_or_create(
                     username=MyUser.objects.get(id=user_id),
@@ -863,7 +1002,16 @@ def check_insights(request,uid):
 
 
             elif pro == 'google':
-                print('google')
+
+                youtube_data.objects.get_or_create(
+                    username=MyUser.objects.get(id=user_id),
+                    account=selected_connections.objects.get(username=MyUser.objects.get(id=user_id), account_uid=uid)
+                )
+                final_obj = youtube_data.objects.get(username=MyUser.objects.get(id=user_id),
+                                                     account=selected_connections.objects.get(
+                                                         username=MyUser.objects.get(id=user_id), account_uid=uid))
+                form = youtube_data_form(instance = final_obj)
+
             elif pro == 'twitter':
                 twitter_data.objects.get_or_create(
                     username=MyUser.objects.get(id=user_id),
@@ -895,7 +1043,7 @@ def check_insights(request,uid):
                 elif pro == 'linkedin':
                     fetch_linkedin_data(user_id, uid)
                 elif pro == 'google':
-                    print('google')
+                    print('google sync now ')
                 elif pro == 'twitter':
                     fetch_twitter_data(user_id, uid)
                 elif pro == 'instagram':
@@ -922,11 +1070,67 @@ def check_insights(request,uid):
                 obj.auto_sync = False
                 obj.save()
                 return redirect('/check-insights/'+obj.account_uid)
+            elif 'submit_det' in request.POST:
+                final_obj = youtube_data.objects.get(username=MyUser.objects.get(id=user_id),
+                                                     account=selected_connections.objects.get(
+                                                         username=MyUser.objects.get(id=user_id), account_uid=uid))
+
+                form = youtube_data_form(request.POST, instance=final_obj)
+
+                print('recieved')
+
+                if form.is_valid():
+                    print('valid form')
+                    form.save()
             else:
                 pass
 
-        return render(request,'accounts/check-insights.html',{'selected':selected,'isenabled':isenabled,'final_obj':final_obj})
+        return render(request,'accounts/check-insights.html',{'selected':selected,'isenabled':isenabled,
+                                                              'final_obj':final_obj,'form':form})
     else:
         return redirect('/')
+
+
+@login_required(login_url='/')
 def search(request):
-    return render(request, 'accounts/search.html', {})
+    form = search_form()
+    user = MyUser.objects.get(id = request.user.id)
+    result = ''
+    obj1 = []
+    obj2 = []
+    obj3 = []
+    if request.method == 'POST':
+        form = search_form(request.POST,)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.username = user
+            form.save()
+            print('Location is ::',form.location)
+            print('Platform is ::', form.platform)
+            print('Category is ::', form.category)
+            print('valid')
+            obj1 = creator_profile_data.objects.filter(location__icontains = form.location).exclude(username = MyUser.objects.get(id = request.user.id))
+            obj2 = []
+            obj3 = []
+            obj4 = []
+
+            for x in obj1:
+                if form.category in x.artist_category:
+                    obj2.append(x)
+                    print(x.username, 'have same category')
+                    if selected_connections.objects.filter(username = x.id,provider = form.platform):
+                        obj3.append(x)
+                else:
+                    pass
+
+            for x in obj2: # same location and category
+                print(x)
+
+            for x in obj3: # same location and category and platform
+                print(x.username)
+
+            return render(request, 'accounts/search.html', {'form':form,'obj1':obj1,'obj2':obj2,'obj3':obj3,'platform':form.platform})
+
+
+
+    return render(request, 'accounts/search.html', {'form':form,'obj1':obj1,'obj2':obj2,'obj3':obj3,})
