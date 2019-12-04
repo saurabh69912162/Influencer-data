@@ -384,8 +384,8 @@ def long_live_facebook(existing_token):
     import facebook
     lol = existing_token
     graph = facebook.GraphAPI(lol)
-    app_id = '1990551177704465'
-    app_secret = '38942534de2eeb787551d1cf9d1d0dac'
+    app_id = 'xxxxxx'
+    app_secret = 'xxxxxxxxx'
     extended_token = graph.extend_access_token(app_id, app_secret)
     final = extended_token['access_token']
     return final
@@ -887,8 +887,8 @@ def fetch_twitter_data(user,uid):
                                                                              account_uid=uid))
 
     home = selected_connections.objects.get(username=user, account_uid=uid)
-    TWITTER_CONSUMER_KEY = '1Vd9j6RGv01MeGpMhqbgGhP5l'
-    TWITTER_CONSUMER_SECRET = 'XxXOZD0mwVrdEcKFkT2qsIlP7scJKIBhqBueH03sw01rEilQjJ'
+    TWITTER_CONSUMER_KEY = 'xxxxxxxxxxx'
+    TWITTER_CONSUMER_SECRET = 'xxxxxxxxxxxxxxxxxxxxxxxxxxx'
     FETCH_TIMELINE = 'https://api.twitter.com/1.1/statuses/user_timeline.json?user_id=' + home.account_uid + '&count=2'
     oauth = OAuth1(TWITTER_CONSUMER_KEY,
                    client_secret=TWITTER_CONSUMER_SECRET,
